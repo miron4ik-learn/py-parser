@@ -1,14 +1,19 @@
 from bs4 import BeautifulSoup
+  
+def parse(html):
+  soup = BeautifulSoup(data, 'lxml')
+  reviews = soup.findAll('div', { 'itemprop': 'review' })
 
-file = open('for_parsing.html', 'r', encoding='utf-8')
+  for review in reviews:
+    author = review.find('meta', { 'itemprop': 'author' })['content']
+    description = review.find('meta', { 'itemprop': 'description' })['content']
+    rating = review.find('meta', { 'itemprop': 'ratingValue' })['content']
+    datePublished = review.find('meta', { 'itemprop': 'datePublished' })['content']
+    
+    print(author, description, rating, datePublished)
+
+file = open('market.html', 'r', encoding='utf-8')
 data = file.read()
 file.close()
 
-soup = BeautifulSoup(data, 'lxml')
-
-reviews = soup.findAll('div', { 'class': 'review' })
-
-for review in reviews:
-  name = review.find('div', { 'class': 'name' }).text.strip()
-  comment = review.find('div', { 'class': 'comment' }).text.strip()
-  print(name, comment, sep=': ')
+parse(data)
